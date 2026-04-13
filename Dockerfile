@@ -1,9 +1,25 @@
 FROM quay.io/jupyter/julia-notebook
 
+ARG NB_USER=jovyan
+ARG NB_UID=1000
+ENV USER ${NB_USER}
+ENV NB_UID ${NB_UID}
+ENV HOME /home/${NB_USER}
+
+RUN adduser --disabled-password \
+    --gecos "Default user" \
+    --uid ${NB_UID} \
+    ${NB_USER}
+
 # install julia pkgs ===========
 RUN echo 'using Pkg; Pkg.add("ClimaLand")' | julia
 RUN echo 'using Pkg; Pkg.precompile()' | julia
-RUN echo 'using Pkg; Pkg.build("PyCall")' | julia
 RUN echo 'using Pkg; Pkg.gc()' | julia
+
+# Make sure the contents of our repo are in ${HOME}
+COPY . ${HOME}
+USER root
+RUN chown -R ${NB_UID} ${HOME}
+USER ${NB_USER}
 
 WORKDIR /work
