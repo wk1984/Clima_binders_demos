@@ -11,4 +11,4 @@ RUN echo 'using Pkg; Pkg.add("ClimaDiagnostics")' | julia
 RUN echo 'using Pkg; Pkg.precompile()' | julia
 RUN echo 'using Pkg; Pkg.gc()' | julia
 
-WORKDIR /work
+# WORKDIR /work
